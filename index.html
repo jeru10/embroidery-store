@@ -95,7 +95,7 @@ header p { font-size: .85rem; opacity: .85; margin-top: 4px; }
 
 <header>
   <h1>🧵 Embroidery Designs</h1>
-  <p>PES &amp; JEF • Browse designs • Contact via WhatsApp to order</p>
+  <p>PES &amp; JEF • <span id="totalCount">0</span> designs • Contact via WhatsApp to order</p>
 </header>
 
 <div class="controls">
@@ -168,6 +168,7 @@ async function init() {
   try {
     const res = await fetch('products.json');
     products = await res.json();
+    document.getElementById('totalCount').textContent = products.length;
     renderCategories();
     renderGallery(products);
   } catch(e) {
@@ -215,7 +216,8 @@ function renderGallery(items) {
   gallery.innerHTML = items.map(p => `
     <div class="product-card" onclick="openModal('${p.id}')">
       <div class="img-wrap">
-        <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'no-img\\'>🧵</div>'">
+        ${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'no-img\\'>🧵</div>'">`
+                 : `<div class="no-img" style="display:flex;align-items:center;justify-content:center;height:100%;color:#ddd;font-size:3rem;">🧵</div>`}
       </div>
       <div class="info">
         <div class="name">${p.name}</div>
@@ -230,7 +232,8 @@ function openModal(id) {
   currentProduct = products.find(p => p.id === id);
   if (!currentProduct) return;
   selectedSize = 'medium';
-  document.getElementById('modalImg').src = currentProduct.image;
+  document.getElementById('modalImg').src = currentProduct.image || '';
+  document.getElementById('modalImg').style.display = currentProduct.image ? 'block' : 'none';
   document.getElementById('modalName').textContent = currentProduct.name;
   document.getElementById('modalCategory').textContent = currentProduct.category;
   document.getElementById('modalFileInfo').innerHTML = `<strong>File type:</strong> ${currentProduct.file_type.toUpperCase()}`;
