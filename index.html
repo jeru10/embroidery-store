@@ -177,7 +177,7 @@ const LABELS = { small: 'Small (≤ 10 cm)', medium: 'Medium (10-20 cm)', large:
 
 async function init() {
   try {
-    const res = await fetch('products.json');
+    const res = await fetch('products.json?v=' + Date.now());
     products = await res.json();
     document.getElementById('totalCount').textContent = products.length;
     renderCategories();
