@@ -18,7 +18,7 @@ header p { font-size: .8rem; opacity: .85; margin-top: 3px; }
 .controls input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: .9rem; outline: none; transition: border .2s; margin-bottom: 8px; }
 .controls input:focus { border-color: #667eea; }
 
-/* Scrollable category filter - horizontal scroll, no wrap */
+/* Scrollable category filter */
 .category-filter { display: flex; gap: 6px; overflow-x: auto; white-space: nowrap; padding-bottom: 4px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
 .category-filter::-webkit-scrollbar { height: 4px; }
 .category-filter::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
@@ -38,7 +38,7 @@ header p { font-size: .8rem; opacity: .85; margin-top: 3px; }
 .product-card .info .category { font-size: .65rem; color: #999; margin-top: 1px; }
 .product-card .info .price { font-size: .8rem; font-weight: 600; color: #667eea; margin-top: 3px; }
 
-/* Modal / Detail View */
+/* Modal */
 .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 200; justify-content: center; align-items: center; padding: 12px; backdrop-filter: blur(4px); }
 .modal-overlay.show { display: flex; }
 .modal { background: #fff; border-radius: 16px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; animation: modalIn .3s ease; }
@@ -76,7 +76,7 @@ header p { font-size: .8rem; opacity: .85; margin-top: 3px; }
 .empty-state { text-align: center; padding: 60px 20px; color: #999; display: none; }
 .empty-state .emoji { font-size: 2.5rem; margin-bottom: 10px; }
 
-/* Mobile improvements */
+/* Mobile */
 @media (max-width: 600px) {
   header h1 { font-size: 1.1rem; }
   header p { font-size: .72rem; }
@@ -100,9 +100,6 @@ header p { font-size: .8rem; opacity: .85; margin-top: 3px; }
   .product-card .info { padding: 6px 8px; }
   .product-card .info .name { font-size: .68rem; }
 }
-
-/* No image fallback */
-.no-img { display: flex; align-items: center; justify-content: center; height: 100%; color: #ddd; font-size: 2.5rem; }
 </style>
 </head>
 <body>
@@ -230,8 +227,7 @@ function renderGallery(items) {
   gallery.innerHTML = items.map(p => `
     <div class="product-card" onclick="openModal('${p.id}')">
       <div class="img-wrap">
-        ${p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'no-img\\'>🧵</div>'">`
-                 : `<div class="no-img">🧵</div>`}
+        <img src="${p.image}" alt="${p.name}" loading="lazy">
       </div>
       <div class="info">
         <div class="name">${p.name}</div>
@@ -246,8 +242,7 @@ function openModal(id) {
   currentProduct = products.find(p => p.id === id);
   if (!currentProduct) return;
   selectedSize = 'medium';
-  document.getElementById('modalImg').src = currentProduct.image || '';
-  document.getElementById('modalImg').style.display = currentProduct.image ? 'block' : 'none';
+  document.getElementById('modalImg').src = currentProduct.image;
   document.getElementById('modalName').textContent = currentProduct.name;
   document.getElementById('modalCategory').textContent = currentProduct.category;
   document.getElementById('modalFileInfo').innerHTML = `<strong>File type:</strong> ${currentProduct.file_type.toUpperCase()}`;
@@ -279,7 +274,6 @@ function updateWhatsAppLink() {
   document.getElementById('whatsappLink').href = `https://wa.me/${PHONE}?text=${msg}`;
 }
 
-// Close modal on Escape
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 init();
